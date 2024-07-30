@@ -9,25 +9,24 @@ const loginsecretKey = process.env.loginsecretKey;
 
 router.post('/login', async (req, res) => {
     const { adminname, adminpassword } = req.body;
-    console.log(adminname, adminpassword )
 
     try {
         const user = await AdminModel.findOne({ adminname });
 
         if (!user) { 
            
-            return res.status(404).json({ status: 'User not found', message: 'User not found' });
+            return res.json({ status: 'User not found', message: 'User not found' });
           
         }
 
        
         else if (adminpassword !== user.adminpassword) {
-            return res.status(401).json({ status: 'Incorrect password', message: 'Incorrect password' });
+            return res.json({ status: 'Incorrect password', message: 'Incorrect password' });
         }
         else{
             const token = jwt.sign({ adminId: user._id }, loginsecretKey, { expiresIn: '1h' });
 
-        res.json({ status: 'success', token, adminId: user._id });
+            res.json({ status: 'success', token, adminId: user._id });
         }
 
        

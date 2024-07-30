@@ -6,7 +6,7 @@ const port = 3001;
 
 
 
-const Register =require("./PostFiles/Register")
+
 const Login =require("./PostFiles/Login")
 const CreateEmloyee =require("./PostFiles/CreateEmployee")
 const GetEmployee =require("./GetFiles/GetEmployee")
@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use(Register)
+
 app.use(Login)
 app.use(CreateEmloyee)
 app.use(getadmin)

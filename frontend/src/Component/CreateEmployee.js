@@ -35,9 +35,8 @@ function CreateEmployee() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    const currentDate = new Date().toISOString().slice(0, 10); // Get current date
+    const currentDate = new Date().toISOString().slice(0, 10);
 
-    // Create FormData object and append form data
     const formDataObj = new FormData();
     formDataObj.append('employeename', formData.employeename);
     formDataObj.append('employeephone', formData.employeephone);
@@ -49,32 +48,37 @@ function CreateEmployee() {
     formDataObj.append('employeecreatedate', currentDate);
 
     axios.post('http://localhost:3001/addemployee', formDataObj, {
-      headers: {
-        'Content-Type': 'multipart/form-data' // Set content type for FormData
-      }
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     })
     .then((response) => {
-      setLoading(false);
-      setFormData({
-        employeename: "",
-        employeephone: "",
-        employeeemail:"",
-        employeedesignation: "",
-        employeegender: "",
-        employeecourse: "",
-        employeeimage: null,
-        employeecreatedate: ""
-      });
-      alert("Employee added successfully");
+        if (response.data.status === "User already registered") {
+            alert("Employee already created");
+        } else if (response.data.status === "Employee added successfully") {
+            setFormData({
+                employeename: "",
+                employeephone: "",
+                employeeemail: "",
+                employeedesignation: "",
+                employeegender: "",
+                employeecourse: "",
+                employeeimage: null,
+                employeecreatedate: ""
+            });
+            alert("Employee added successfully");
+        } else {
+            alert(response.data.status);
+        }
     })
     .catch((error) => {
-      console.error('Error creating employee', error);
-      alert('Error creating employee');
+        console.error('Error creating employee', error);
+        alert('Error creating employee');
     })
     .finally(() => {
-      setLoading(false);
+        setLoading(false);
     });
-  };
+};
 
   return (
     <div className="login-container mt-5  border border-dark shadow-sm p-5 mb-5 bg-white">

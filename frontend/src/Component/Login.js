@@ -32,26 +32,22 @@ function Login() {
             });
     
             if (response.data.status === 'success') {
+                setErrorMessage('')
                 alert("Logged in successfully");
                 sessionStorage.setItem('token', response.data.token);
                 sessionStorage.setItem("adminId", JSON.stringify(response.data.adminId));
                 nav('/');
                 window.location.reload();
-            } else if (response && response.status === 401) {
+            } else if (response.data.status === "Incorrect password") {
                 setErrorMessage('Incorrect password');
             } else {
-                alert('Login failed. Please check your credentials.');
+                setErrorMessage('User Not Found ');
             }
         } catch (error) {
-            console.error('Error during login:', error);
-            if (error.response && error.response.status === 404) {
-                setErrorMessage('User not found ');
-            } else if (error.response && error.response.status === 401) {
-                setErrorMessage(' Incorrect username or password.');
-            } else {
-                alert('Server error.');
-            }
-            console.log('Full error details:', error.config);
+            console.log('Error during login:', error);
+             alert("Server error")
+
+    
         } finally {
             setLoading(false);
         }
@@ -65,7 +61,7 @@ function Login() {
                     <h2 className="text-primary text-center text-fluid">Login Page</h2>
                     <div className="d-flex justify-content-center">
                         <form action="post" onSubmit={handleSubmit}>
-                            <label htmlFor="adminname"> UserName :</label><br />
+                            <label htmlFor="adminname" className="mb-1"> UserName :</label><br />
                             <input
                                 className="form-control w-100"
                                 type="text"
@@ -77,7 +73,7 @@ function Login() {
                                 required
                             /><br />
 
-                            <label> Password : </label><br />
+                            <label htmlFor=" adminpassword" className="mb-1"> Password : </label><br />
                             <div className="input-group">
                                 <input
                                     className="form-control"
@@ -92,7 +88,7 @@ function Login() {
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </button>
                             </div>
-                            {errorMessage && <p className="text-danger text-center">{errorMessage}</p>}
+                            {errorMessage && <p className="text-danger text-center mt-1">{errorMessage}</p>}
                             <br />
                             
                             {loading ? (
