@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const connectDb = async () => {
     try {
-        const DBurl = `${process.env.DBurl}/Project2`; 
+        const DBurl = process.env.DBurl; 
 
         await mongoose.connect(DBurl, {
             useNewUrlParser: true,

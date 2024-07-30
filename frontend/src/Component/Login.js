@@ -2,14 +2,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState } from 'react';
 import { useRegistration } from './UseRegistration';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 
 function Login() {
     const [loading, setLoading] = useState(false);
     const [AdminDetails, handleAdminDetails] = useRegistration({
-        adminemail: "",
+        adminname: "",
         adminpassword: "",
     });
     const nav = useNavigate();
@@ -21,31 +21,40 @@ function Login() {
         setShowPassword(!showPassword);
     };
 
-    const handleSubmit = (e) => {
+   
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-    
-        axios.post("http://localhost:3001/login", AdminDetails)
-            .then((response) => {
-                if (response.data.status === 'success') {
-                    alert("logged in Successfully");
-                    sessionStorage.setItem('token', response.data.token);
-                    sessionStorage.setItem("adminId", JSON.stringify(response.data.adminId));
-                    nav('/');
-                    window.location.reload();
-                } else if (response.data.status === 'error' && response.data.message === 'Incorrect password') {
-                    setErrorMessage('Incorrect password');
-                } else {
-                    alert('Login failed. Please check your credentials.');
-                }
-            })
-            .catch((error) => {
-                console.error('Error during login:', error);
-                alert('server error.');
-            })
-            .finally(() => {
-                setLoading(false);
+        try {
+            const response = await axios.post('http://localhost:3001/login', {
+                adminname: AdminDetails.adminname,
+                adminpassword: AdminDetails.adminpassword,
             });
+    
+            if (response.data.status === 'success') {
+                alert("Logged in successfully");
+                sessionStorage.setItem('token', response.data.token);
+                sessionStorage.setItem("adminId", JSON.stringify(response.data.adminId));
+                nav('/');
+                window.location.reload();
+            } else if (response && response.status === 401) {
+                setErrorMessage('Incorrect password');
+            } else {
+                alert('Login failed. Please check your credentials.');
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            if (error.response && error.response.status === 404) {
+                setErrorMessage('User not found ');
+            } else if (error.response && error.response.status === 401) {
+                setErrorMessage(' Incorrect username or password.');
+            } else {
+                alert('Server error.');
+            }
+            console.log('Full error details:', error.config);
+        } finally {
+            setLoading(false);
+        }
     };
     
     
@@ -56,14 +65,15 @@ function Login() {
                     <h2 className="text-primary text-center text-fluid">Login Page</h2>
                     <div className="d-flex justify-content-center">
                         <form action="post" onSubmit={handleSubmit}>
-                            <label htmlFor="email"> Email :</label><br />
+                            <label htmlFor="adminname"> UserName :</label><br />
                             <input
                                 className="form-control w-100"
-                                type="email"
-                                name="adminemail"
-                                value={AdminDetails.adminemail}
+                                type="text"
+                                name="adminname"
+                                value={AdminDetails.adminname}
                                 onChange={handleAdminDetails}
-                                placeholder='Your Email...'
+                                placeholder='username'
+                                autoComplete="off"
                                 required
                             /><br />
 
@@ -75,15 +85,16 @@ function Login() {
                                     name="adminpassword"
                                     value={AdminDetails.adminpassword}
                                     onChange={handleAdminDetails}
+                                    autoComplete="off"    
                                     required
                                 />
                                 <button className="border-0 btn btn-primary" type="button" onClick={togglePasswordVisibility}>
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </button>
                             </div>
-                            {errorMessage && <p className="text-danger">{errorMessage}</p>}
+                            {errorMessage && <p className="text-danger text-center">{errorMessage}</p>}
                             <br />
-                            <Link to="/register" className="text-decoration-none custom-link">Create a new Account</Link><br /><br />
+                            
                             {loading ? (
                                 <button className="btn btn-secondary w-100">Loading...</button>
                             ) : (

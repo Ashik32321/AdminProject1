@@ -6,9 +6,7 @@ const AdminModel = require('../Model/AdminModel');
 router.get('/getadminprofile', async (req, res) => {
     try {
         const { _id } = req.query;
-        console.log(_id)
 
-        // Fetch admin profile by id
         const admin = await AdminModel.findById(_id);
 
         if (admin) {

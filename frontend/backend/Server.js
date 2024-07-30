@@ -13,7 +13,7 @@ const GetEmployee =require("./GetFiles/GetEmployee")
 const getadmin = require("./GetFiles/GetAdminProfie")
 const Deleteemployee =require("./DeleteFiles/DeleteEmployee")
 const EditEmployee=require("./UpdateFiles/EditEmployee")
-
+const  searchemployee=require("./PostFiles/SearchEmployee")
 
 const app = express();
 app.use(cors())
@@ -39,6 +39,7 @@ app.use(getadmin)
 app.use(EditEmployee)
 
 app.use(Deleteemployee)
+app.use(searchemployee)
 
 
 app.use(GetEmployee)

@@ -4,7 +4,8 @@ import axios from 'axios';
 
 function AdminNavbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const _id = sessionStorage.getItem("adminId").replace(/"/g, '');
+  const _id = sessionStorage.getItem("adminId") ? sessionStorage.getItem("adminId").replace(/"/g, '') : '';
+
   const [adminName, setAdminName] = useState('');
   const nav = useNavigate();
 
@@ -46,7 +47,9 @@ function AdminNavbar() {
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">Admin Dashboard</Link>
+         
+          <img src="./LogoImage/dealsdray_logo.jpeg" alt='logo' height={50} ></img>
+
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
